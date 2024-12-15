@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun MapPage() {
+fun MapPage(viewModel: MainViewModel) {
     Column(
         modifier = Modifier.fillMaxSize()
             .background(colorResource(id = R.color.purple_700))
