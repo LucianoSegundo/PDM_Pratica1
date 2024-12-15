@@ -17,3 +17,4 @@ fun MainNavHost(navController: NavHostController, viewModel: MainViewModel) {
         composable<Route.Map> { MapPage(viewModel = viewModel) }
     }
 }
+
