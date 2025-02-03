@@ -1,4 +1,4 @@
-package com.weatherapp
+package com.weatherapp.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -13,6 +13,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.weatherapp.MainViewModel
+import com.weatherapp.R
 
 @Composable
 fun HomePage(viewModel: MainViewModel) {
