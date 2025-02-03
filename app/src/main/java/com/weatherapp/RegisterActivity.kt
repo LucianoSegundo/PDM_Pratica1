@@ -34,6 +34,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.weatherapp.model.FBDatabase
+import com.weatherapp.model.User
 import com.weatherapp.ui.theme.WeatherAppTheme
 
 class RegisterActivity : ComponentActivity() {
@@ -141,6 +143,8 @@ fun Registro( modifier: Modifier = Modifier) {
                                     Intent(activity, MainActivity::class.java).setFlags(
                                         FLAG_ACTIVITY_SINGLE_TOP )
                                 )
+                                FBDatabase().register(User(nome, email))
+
                             } else {
                                 Toast.makeText(activity,
                                     "Registro FALHOU!", Toast.LENGTH_LONG).show()
