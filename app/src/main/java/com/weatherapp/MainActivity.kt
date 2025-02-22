@@ -39,6 +39,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.weatherapp.model.FBDatabase
+import com.weatherapp.model.api.WeatherService
 
 
 @ExperimentalMaterial3Api
@@ -49,9 +50,11 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val fbDB = remember { FBDatabase() }
+            val weatherService = remember { WeatherService() }
             val viewModel : MainViewModel = viewModel(
-                factory = MainViewModelFactory(fbDB)
+                factory = MainViewModelFactory(fbDB, weatherService)
             )
+
 
 
             var showDialog by remember { mutableStateOf(false) }
