@@ -11,6 +11,7 @@ import com.weatherapp.model.Forecast
 import com.weatherapp.model.User
 import com.weatherapp.model.Weather
 import com.weatherapp.model.api.WeatherService
+import com.weatherapp.ui.nav.Route
 
 class MainViewModel (private val db: FBDatabase,
                      private val service : WeatherService
@@ -23,6 +24,11 @@ class MainViewModel (private val db: FBDatabase,
     private val _user = mutableStateOf<User?> (null)
     val user : User?
         get() = _user.value
+
+    private var _page = mutableStateOf<Route>(Route.Home)
+    var page: Route
+        get() = _page.value
+        set(tmp) { _page.value = tmp }
 
     private var _city = mutableStateOf<City?>(null)
     var city: City?
