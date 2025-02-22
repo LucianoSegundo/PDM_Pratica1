@@ -25,3 +25,17 @@ data class APICurrentWeather (
     var location : APILocation? = null,
     var current : APIWeather? = null
 )
+
+data class APIWeatherForecast (
+    var location: APILocation? = null,
+    var current: APIWeatherForecast? = null,
+    var forecast: APIForecast? = null
+)
+data class APIForecast (
+    var forecastday: List<APIForecastDay>? = null
+)
+data class APIForecastDay (
+    var date: String? = null,
+    var day: APIWeather? = null
+)
+

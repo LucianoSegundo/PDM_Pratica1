@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.model.LatLng
 import com.weatherapp.model.City
 import com.weatherapp.model.FBDatabase
+import com.weatherapp.model.Forecast
 import com.weatherapp.model.User
 import com.weatherapp.model.Weather
 import com.weatherapp.model.api.WeatherService
@@ -22,6 +23,13 @@ class MainViewModel (private val db: FBDatabase,
     private val _user = mutableStateOf<User?> (null)
     val user : User?
         get() = _user.value
+
+    private var _city = mutableStateOf<City?>(null)
+    var city: City?
+        get() = _city.value
+        set(tmp) { _city = mutableStateOf(tmp?.copy()) }
+
+
     init {
         db.setListener(this)
     }
@@ -38,11 +46,19 @@ class MainViewModel (private val db: FBDatabase,
     override fun onCityUpdate(city: City) {
         _cities.remove(city.name)
         _cities[city.name] = city.copy()
+
+        if (_city.value?.name == city.name) {
+            _city.value = city.copy()
+        }
     }
 
      fun onCityUpdated(city: City) {
         _cities.remove(city.name)
         _cities[city.name] = city.copy()
+
+         if (_city.value?.name == city.name) {
+             _city.value = city.copy()
+         }
     }
 
     override fun onCityRemoved(city: City) { _cities.remove(city.name) }
@@ -74,6 +90,23 @@ class MainViewModel (private val db: FBDatabase,
             _cities[city.name] = city.copy()
         }
     }
+
+    fun loadForecast(city : City) {
+        service.getForecast(city.name) { result ->
+            city.forecast = result?.forecast?.forecastday?.map {
+                Forecast(
+                    date = it.date?:"00-00-0000",
+                    weather = it.day?.condition?.text?:"Erro carregando!",
+                    tempMin = it.day?.mintemp_c?:-1.0,
+                    tempMax = it.day?.maxtemp_c?:-1.0,
+                    imgUrl = ("https:" + it.day?.condition?.icon)
+                )
+            }
+            _cities.remove(city.name)
+            _cities[city.name] = city.copy()
+        }
+    }
+
 
 }
 
