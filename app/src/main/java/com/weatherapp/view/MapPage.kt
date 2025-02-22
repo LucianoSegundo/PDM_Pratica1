@@ -47,8 +47,13 @@ fun MapPage(viewModel: MainViewModel) {
 
         viewModel.cities.forEach {
             if (it.location != null) {
+                if (it.weather == null) {
+                    viewModel.loadWeather(it)
+                }
+
                 Marker( state = MarkerState(position = it.location!!),
-                    title = it.name, snippet = "${it.location}")
+                    title = it.name,
+                    snippet = it.weather?.desc?:"Carregando...")
             }
         }
 
