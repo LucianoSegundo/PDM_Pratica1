@@ -114,6 +114,13 @@ class MainViewModel (private val db: FBDatabase,
     }
 
 
+    fun loadBitmap(city: City) {
+        service.getBitmap(city.weather!!.imgUrl) { bitmap ->
+            city.weather!!.bitmap = bitmap
+            onCityUpdated(city)
+        }
+    }
+
 }
 
 
