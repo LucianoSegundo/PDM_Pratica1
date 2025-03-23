@@ -1,4 +1,4 @@
-package com.weatherapp.model
+package com.weatherapp.model.entity
 
 data class Forecast (
     val date: String,

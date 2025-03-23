@@ -1,4 +1,4 @@
-package com.weatherapp.view
+package com.weatherapp.view.paginas
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,23 +12,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.Icon
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.weatherapp.MainViewModel
+import coil3.compose.AsyncImage
+import com.weatherapp.model.MainViewModel
 import com.weatherapp.R
-import com.weatherapp.model.Forecast
+import com.weatherapp.model.entity.Forecast
 import java.text.DecimalFormat
 
 @Composable
@@ -48,9 +47,15 @@ fun HomePage(viewModel: MainViewModel) {
             return
         }
         Row {
-            Icon( imageVector = Icons.Filled.AccountBox,
-                contentDescription = "Localized description",
-                modifier = Modifier.size(150.dp) )
+
+            AsyncImage( // Substitui o Icon
+                model = viewModel.city?.weather?.imgUrl,
+                modifier = Modifier.size(100.dp),
+                error = painterResource(id = R.drawable.loading),
+                contentDescription = "Imagem"
+            )
+
+
             Column {
                 Spacer(modifier = Modifier.size(12.dp))
                 Text(text = viewModel.city?.name?:"Selecione uma cidade...",
@@ -88,9 +93,14 @@ fun ForecastItem(
             .clickable( onClick = { onClick(forecast) }),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon( imageVector = Icons.Filled.LocationOn,
-            contentDescription = "Localized description",
-            modifier = Modifier.size(48.dp) )
+
+        AsyncImage( // Substitui o Icon
+            model = forecast.imgUrl,
+            modifier = Modifier.size(40.dp),
+            error = painterResource(id = R.drawable.loading),
+            contentDescription = "Imagem"
+        )
+
         Spacer(modifier = Modifier.size(16.dp))
         Column {
             Text(modifier = Modifier, text = forecast.weather, fontSize = 24.sp)

@@ -1,15 +1,15 @@
-package com.weatherapp
+package com.weatherapp.model
 
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.model.LatLng
-import com.weatherapp.model.City
-import com.weatherapp.model.FBDatabase
-import com.weatherapp.model.Forecast
-import com.weatherapp.model.User
-import com.weatherapp.model.Weather
+import com.weatherapp.model.entity.City
+import com.weatherapp.model.database.FBDatabase
+import com.weatherapp.model.entity.Forecast
+import com.weatherapp.model.entity.User
+import com.weatherapp.model.entity.Weather
 import com.weatherapp.model.api.WeatherService
 import com.weatherapp.ui.nav.Route
 
@@ -113,6 +113,13 @@ class MainViewModel (private val db: FBDatabase,
         }
     }
 
+
+    fun loadBitmap(city: City) {
+        service.getBitmap(city.weather!!.imgUrl) { bitmap ->
+            city.weather!!.bitmap = bitmap
+            onCityUpdated(city)
+        }
+    }
 
 }
 
