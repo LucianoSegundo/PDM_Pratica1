@@ -1,4 +1,4 @@
-package com.weatherapp.view
+package com.weatherapp.view.paginas
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,9 +25,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.weatherapp.MainViewModel
+import com.weatherapp.model.MainViewModel
 import com.weatherapp.R
-import com.weatherapp.model.Forecast
+import com.weatherapp.model.entity.Forecast
 import java.text.DecimalFormat
 
 @Composable

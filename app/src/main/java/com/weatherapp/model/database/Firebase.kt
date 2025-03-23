@@ -1,40 +1,14 @@
-package com.weatherapp.model
+package com.weatherapp.model.database
 
-import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
-
-class FBCity {
-    var name : String? = null
-    var lat : Double? = null
-    var lng : Double? = null
-    fun toCity(): City {
-        val latlng = if (lat!=null&&lng!=null) LatLng(lat!!, lng!!) else null
-        return City(name!!, weather = null, location = latlng)
-    }
-}
-fun City.toFBCity() : FBCity {
-    val fbCity = FBCity()
-    fbCity.name = this.name
-    fbCity.lat = this.location?.latitude ?: 0.0
-    fbCity.lng = this.location?.longitude ?: 0.0
-    return fbCity
-}
-
-class FBUser {
-    var name : String ? = null
-    var email : String? = null
-    fun toUser() = User(name!!, email!!)
-}
-fun User.toFBUser() : FBUser {
-    val fbUser = FBUser()
-    fbUser.name = this.name
-    fbUser.email = this.email
-    return fbUser
-}
+import com.weatherapp.model.entity.City
+import com.weatherapp.model.entity.User
+import com.weatherapp.model.database.FBEntity.FBCity
+import com.weatherapp.model.database.FBEntity.FBUser
 
 class FBDatabase {
     interface Listener {

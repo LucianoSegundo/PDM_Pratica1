@@ -1,4 +1,4 @@
-package com.weatherapp.view
+package com.weatherapp.view.paginas
 
 import android.app.Activity
 import android.widget.Toast
@@ -24,11 +24,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import com.weatherapp.MainViewModel
+import com.weatherapp.model.MainViewModel
 import com.weatherapp.R
-import com.weatherapp.model.City
+import com.weatherapp.model.entity.City
 import com.weatherapp.ui.nav.Route
 
 @Composable

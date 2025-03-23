@@ -1,4 +1,4 @@
-package com.weatherapp.view
+package com.weatherapp.view.paginas
 
 import android.content.pm.PackageManager
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
@@ -21,7 +20,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.scale
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
-import com.weatherapp.MainViewModel
+import com.weatherapp.model.MainViewModel
 import com.weatherapp.R
 
 @Composable

@@ -1,8 +1,7 @@
-package com.weatherapp
+package com.weatherapp.view.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.os.Bundle
 import android.widget.Toast
@@ -27,25 +26,27 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.weatherapp.MainActivity
+import com.weatherapp.model.database.FBDatabase
+import com.weatherapp.model.entity.User
 import com.weatherapp.ui.theme.WeatherAppTheme
 
-class LoginActivity : ComponentActivity() {
+class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             WeatherAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginPage(
+                    Registro(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -57,81 +58,107 @@ class LoginActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun LoginPage(modifier: Modifier = Modifier) {
+fun Registro( modifier: Modifier = Modifier) {
+    var nome by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    var senha by rememberSaveable { mutableStateOf("") }
+    var confSenha by rememberSaveable { mutableStateOf("") }
     val activity = LocalContext.current as? Activity
+
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = CenterHorizontally,
-        modifier = modifier.padding(16.dp).fillMaxSize(),
+        modifier =  modifier.padding(8.dp)
     ) {
-        Text(
-            text = "Bem-vindo/a!",
-            fontSize = 24.sp
-        )
-        Spacer(modifier = modifier.size(4.dp))
+
+    Text(
+        text = "Registro",
+
+    )
         OutlinedTextField(
-            value = email,
-            label = { Text(text = "Digite seu e-mail") },
+            value = nome,
+            label = { Text(text = "Nome") },
             modifier = modifier.fillMaxWidth(),
-            onValueChange = { email = it }
+            onValueChange = { nome = it}
+
         )
-        Spacer(modifier = modifier.size(24.dp))
+
         OutlinedTextField(
-            value = password,
-            label = { Text(text = "Digite sua senha") },
-            modifier = modifier.fillMaxWidth(),
-            onValueChange = { password = it },
+            value =  email,
+            label =  { Text(text = "Email") },
+            modifier =  modifier.fillMaxWidth(),
+            onValueChange =  {email = it}
+        )
+
+        OutlinedTextField(
+            value = senha,
+            label = { Text(text = "Senha") },
+            modifier =  modifier.fillMaxWidth(),
+            onValueChange = {senha = it},
             visualTransformation = PasswordVisualTransformation()
+
         )
-        Spacer(modifier = modifier.size(4.dp))
-        Row(modifier = modifier) {
+
+        OutlinedTextField(
+            value = confSenha,
+            label = { Text(text = "Confirmar Senha") },
+            modifier = modifier.fillMaxWidth(),
+            onValueChange = {confSenha= it},
+            visualTransformation = PasswordVisualTransformation()
+
+        )
+
+        Row {
             Button(
                 onClick = {
-                    Firebase.auth.signInWithEmailAndPassword(email, password)
+                    Toast.makeText(activity, "Voltar", Toast.LENGTH_LONG).show()
+
+                    activity?.finish()
+                },
+            ){
+                Text("voltar")
+            }
+            Spacer(modifier = modifier.size(24.dp))
+
+            Button(onClick = {
+                senha= "";
+                nome = "";
+                email ="";
+                confSenha ="";
+
+                Toast.makeText(activity, "formulario Limpo", Toast.LENGTH_SHORT).show()
+            }) {
+                Text("Limpar")
+            }
+            Spacer(modifier = modifier.size(24.dp))
+
+
+            Button(
+                onClick = {
+                    //a
+                    Firebase.auth.createUserWithEmailAndPassword(email, senha)
                         .addOnCompleteListener(activity!!) { task ->
                             if (task.isSuccessful) {
+                                Toast.makeText(activity,"Registro OK!", Toast.LENGTH_LONG).show()
                                 activity.startActivity(
                                     Intent(activity, MainActivity::class.java).setFlags(
-                                        FLAG_ACTIVITY_SINGLE_TOP
-                                    )
+                                        FLAG_ACTIVITY_SINGLE_TOP )
                                 )
-                                Toast.makeText(activity, "Login OK!", Toast.LENGTH_LONG).show()
+                                FBDatabase().register(User(nome, email))
+
                             } else {
-                                Toast.makeText(activity, "Login FALHOU!", Toast.LENGTH_LONG).show()
+                                Toast.makeText(activity,
+                                    "Registro FALHOU!", Toast.LENGTH_LONG).show()
                             }
                         }
 
-
-
-                } ,
-                enabled = email.isNotEmpty() && password.isNotEmpty()
-
-            ) {
-                Text("Login")
-            }
-
-            Spacer(modifier = modifier.size(24.dp))
-            Button(
-                onClick = {
-                    activity?.startActivity(
-                        Intent(activity, RegisterActivity::class.java).setFlags(
-                            FLAG_ACTIVITY_SINGLE_TOP or FLAG_ACTIVITY_NO_HISTORY
-                        )
-                    )
-
-                }
+                },
+                enabled =  nome.isNotEmpty() && email.isNotEmpty() && senha.isNotEmpty() && confSenha.isNotEmpty() && senha.equals(confSenha)
             ) {
                 Text("Registrar")
             }
-
-            Spacer(modifier = modifier.size(24.dp))
-            Button(
-                onClick = { email = ""; password = "" }
-            ) {
-                Text("Limpar")
-            }
         }
+
     }
 }
+
