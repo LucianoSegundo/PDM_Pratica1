@@ -12,6 +12,7 @@ import com.weatherapp.model.entity.User
 import com.weatherapp.model.entity.Weather
 import com.weatherapp.model.api.WeatherService
 import com.weatherapp.ui.nav.Route
+import kotlin.random.Random
 
 class MainViewModel (private val db: FBDatabase,
                      private val service : WeatherService
@@ -33,7 +34,7 @@ class MainViewModel (private val db: FBDatabase,
     private var _city = mutableStateOf<City?>(null)
     var city: City?
         get() = _city.value
-        set(tmp) { _city = mutableStateOf(tmp?.copy()) }
+        set(tmp) { _city.value = tmp?.copy(salt = Random.nextLong()) }
 
 
     init {
@@ -49,16 +50,7 @@ class MainViewModel (private val db: FBDatabase,
         _user.value = user
     }
     override fun onCityAdded(city: City) { _cities[city.name] = city }
-    override fun onCityUpdate(city: City) {
-        _cities.remove(city.name)
-        _cities[city.name] = city.copy()
-
-        if (_city.value?.name == city.name) {
-            _city.value = city.copy()
-        }
-    }
-
-     fun onCityUpdated(city: City) {
+     override fun onCityUpdate(city: City) {
         _cities.remove(city.name)
         _cities[city.name] = city.copy()
 
@@ -68,6 +60,9 @@ class MainViewModel (private val db: FBDatabase,
     }
 
     override fun onCityRemoved(city: City) { _cities.remove(city.name) }
+    override fun onUserSignOut() {
+        TODO("Not yet implemented")
+    }
 
     fun add(name: String) {
         service.getLocation(name) { lat, lng ->
@@ -92,8 +87,7 @@ class MainViewModel (private val db: FBDatabase,
                 temp = apiWeather?.current?.temp_c?:-1.0,
                 imgUrl = "https:" + apiWeather?.current?.condition?.icon
             )
-            _cities.remove(city.name)
-            _cities[city.name] = city.copy()
+            onCityUpdate(city)
         }
     }
 
@@ -108,8 +102,7 @@ class MainViewModel (private val db: FBDatabase,
                     imgUrl = ("https:" + it.day?.condition?.icon)
                 )
             }
-            _cities.remove(city.name)
-            _cities[city.name] = city.copy()
+            onCityUpdate(city)
         }
     }
 
@@ -117,10 +110,16 @@ class MainViewModel (private val db: FBDatabase,
     fun loadBitmap(city: City) {
         service.getBitmap(city.weather!!.imgUrl) { bitmap ->
             city.weather!!.bitmap = bitmap
-            onCityUpdated(city)
+            onCityUpdate(city)
         }
     }
 
+
+
+    fun update(city: City){
+        db.update(city)
+        loadWeather(city)
+    }
 }
 
 

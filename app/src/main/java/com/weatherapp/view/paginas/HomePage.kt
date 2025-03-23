@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.Icon
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +31,7 @@ import coil3.compose.AsyncImage
 import com.weatherapp.model.MainViewModel
 import com.weatherapp.R
 import com.weatherapp.model.entity.Forecast
+import com.weatherapp.ui.nav.BottomNavItem.MapButton.icon
 import java.text.DecimalFormat
 
 @Composable
@@ -46,6 +50,13 @@ fun HomePage(viewModel: MainViewModel) {
             }
             return
         }
+
+        viewModel.city?.let {
+            if (viewModel.city!!.weather == null) {
+                viewModel.loadWeather(viewModel.city!!)
+            }
+        }
+
         Row {
 
             AsyncImage( // Substitui o Icon
@@ -58,8 +69,23 @@ fun HomePage(viewModel: MainViewModel) {
 
             Column {
                 Spacer(modifier = Modifier.size(12.dp))
-                Text(text = viewModel.city?.name?:"Selecione uma cidade...",
-                    fontSize = 28.sp)
+
+                Row {
+                    Text(text = viewModel.city?.name?:"Selecione uma cidade...",
+                        fontSize = 28.sp)
+                    Icon(
+                        imageVector = Icons.Filled.Notifications, contentDescription = "Monitorada?",
+                        modifier = Modifier.size(32.dp).clickable(enabled=viewModel.city != null){
+                            var cidade = viewModel.city!!
+                            viewModel.update(cidade
+                                .copy(isMonitored = !cidade.isMonitored))
+
+
+                        }
+
+                    )
+                }
+
                 Spacer(modifier = Modifier.size(12.dp))
                 Text(text = viewModel.city?.weather?.desc?:"...",
                     fontSize = 22.sp)
@@ -68,12 +94,16 @@ fun HomePage(viewModel: MainViewModel) {
                     fontSize = 22.sp)
             }
         }
+
         if (viewModel.city!!.forecast == null) {
             viewModel.loadForecast(viewModel.city!!); return
         }
-        LazyColumn {
-            items(viewModel.city!!.forecast!!) { forecast ->
-                ForecastItem(forecast, onClick = { })
+
+        viewModel.city!!.forecast?.let { list ->
+            LazyColumn {
+                items(list) { forecast ->
+                    ForecastItem(forecast, onClick = { })
+                }
             }
         }
     }
