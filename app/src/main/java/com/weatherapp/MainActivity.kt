@@ -33,7 +33,11 @@ import com.weatherapp.ui.nav.Route
 import com.weatherapp.ui.theme.WeatherAppTheme
 import androidx.navigation.NavDestination.Companion.hasRoute
 import android.Manifest
+import android.content.Context
+import android.content.Intent
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.core.util.Consumer
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -41,6 +45,7 @@ import com.weatherapp.model.MainViewModel
 import com.weatherapp.model.MainViewModelFactory
 import com.weatherapp.model.database.FBDatabase
 import com.weatherapp.model.api.WeatherService
+import com.weatherapp.model.monitor.ForecastMonitor
 
 
 @ExperimentalMaterial3Api
@@ -52,8 +57,9 @@ class MainActivity : ComponentActivity() {
 
             val fbDB = remember { FBDatabase() }
             val weatherService = remember { WeatherService() }
+            val monitor = remember { ForecastMonitor(applicationContext) }
             val viewModel : MainViewModel = viewModel(
-                factory = MainViewModelFactory(fbDB, weatherService)
+                factory = MainViewModelFactory(fbDB, monitor, weatherService)
             )
 
 
@@ -64,6 +70,17 @@ class MainActivity : ComponentActivity() {
             val showButton = currentRoute.value?.destination?.hasRoute(Route.List::class)?:false
             val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission(), onResult = {} )
 
+
+            DisposableEffect(Unit) {
+                val listener = Consumer<Intent> { intent ->
+                    val name = intent.getStringExtra("city")
+                    val city = viewModel.cities.find { it.name == name }
+                    viewModel.city = city
+                    viewModel.page = Route.Home
+                }
+                addOnNewIntentListener(listener)
+                onDispose { removeOnNewIntentListener(listener) }
+            }
             WeatherAppTheme {
                 if (showDialog) CityDialog(
                     onDismiss = { showDialog = false },
